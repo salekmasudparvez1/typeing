@@ -16,6 +16,7 @@ import type {
   AppSettings,
   DailyPerformance,
   Difficulty,
+  Language,
   Screen,
   TestMode,
   TestResult,
@@ -36,6 +37,7 @@ interface AppState {
   setTheme: (theme: Theme) => void;
   setDifficulty: (difficulty: Difficulty) => void;
   setMode: (mode: TestMode) => void;
+  setLanguage: (language: Language) => void;
   setSoundEnabled: (enabled: boolean) => void;
   startTest: () => void;
   finishTest: (result: TestResult) => void;
@@ -51,6 +53,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     soundEnabled: true,
     difficulty: "medium",
     mode: "normal",
+    language: "general",
     bestWpm: 0,
     streak: 0,
     lastPlayedDate: null,
@@ -103,6 +106,11 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ settings });
   },
 
+  setLanguage: (language) => {
+    const settings = updateSettings({ language });
+    set({ settings });
+  },
+
   setSoundEnabled: (enabled) => {
     persistSound(enabled);
     const settings = updateSettings({ soundEnabled: enabled });
@@ -113,7 +121,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const { settings } = get();
     set({
       screen: "typing",
-      currentText: getRandomText(settings.difficulty),
+      currentText: getRandomText(settings.difficulty, settings.language),
     });
   },
 
@@ -131,7 +139,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const { settings } = get();
     set({
       screen: "typing",
-      currentText: getRandomText(settings.difficulty),
+      currentText: getRandomText(settings.difficulty, settings.language),
     });
   },
 
