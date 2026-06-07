@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Eye, Flower2, Layout } from "lucide-react";
+import { Code2, Eye, Flower2, Layout } from "lucide-react";
 import { cn } from "@/utils/cn";
 import type { TestMode } from "@/types";
 
@@ -9,6 +9,7 @@ const MODES: { value: TestMode; label: string; icon: React.ReactNode }[] = [
   { value: "normal", label: "Normal", icon: <Layout className="w-4 h-4" /> },
   { value: "focus", label: "Focus", icon: <Eye className="w-4 h-4" /> },
   { value: "zen", label: "Zen", icon: <Flower2 className="w-4 h-4" /> },
+  { value: "code", label: "Code", icon: <Code2 className="w-4 h-4" /> },
 ];
 
 interface ModeSelectorProps {
