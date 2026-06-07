@@ -1,4 +1,4 @@
-import type { Difficulty } from "@/types";
+import type { Difficulty, Language } from "@/types";
 
 export const TYPING_TEXTS: Record<Difficulty, string[]> = {
   easy: [
@@ -24,7 +24,40 @@ export const TYPING_TEXTS: Record<Difficulty, string[]> = {
   ],
 };
 
-export function getRandomText(difficulty: Difficulty): string {
+export const CODE_SNIPPETS: Record<Language, string[]> = {
+  general: [],
+  python: [
+    "def fibonacci(n: int) -> int:\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\n# Calculate first 10 Fibonacci numbers",
+    "import pandas as pd\n\ndf = pd.read_csv('data.csv')\nresult = df.groupby('category')['value'].mean()",
+    "from sklearn.model_selection import train_test_split\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)",
+  ],
+  react: [
+    "const [state, setState] = useState([]);\nuseEffect(() => {\n  fetchData().then(setState);\n}, []);",
+    "<button onClick={handleClick} className=\"px-4 py-2 bg-blue-600 rounded-lg\">\n  Click me\n</button>",
+    "function Counter() {\n  const [count, setCount] = useState(0);\n  return <button onClick={() => setCount(c => c+1)}>{count}</button>;\n}",
+  ],
+  pandas: [
+    "df['new_col'] = df['col1'] + df['col2']\nfiltered = df[df['age'] > 30].sort_values('salary')",
+    "pivot = pd.pivot_table(df, values='sales', index='region', columns='year', aggfunc='sum')",
+  ],
+  numpy: [
+    "import numpy as np\narr = np.random.randn(1000, 5)\nmean = np.mean(arr, axis=0)",
+    "mask = np.logical_and(arr > 0, arr < 1)\nresult = arr[mask]",
+  ],
+  sklearn: [
+    "from sklearn.ensemble import RandomForestClassifier\nmodel = RandomForestClassifier(n_estimators=100)\nmodel.fit(X_train, y_train)",
+    "from sklearn.metrics import classification_report\nprint(classification_report(y_test, y_pred))",
+  ],
+  typescript: [
+    "interface User { id: number; name: string; email?: string; }\n\nconst fetchUser = async (id: number): Promise<User> => {\n  const res = await fetch(`/api/users/${id}`);\n  return res.json();\n}",
+  ],
+};
+
+export function getRandomText(difficulty: Difficulty, language: Language = "general"): string {
+  if (language !== "general" && CODE_SNIPPETS[language]) {
+    const snippets = CODE_SNIPPETS[language];
+    return snippets[Math.floor(Math.random() * snippets.length)];
+  }
   const texts = TYPING_TEXTS[difficulty];
   return texts[Math.floor(Math.random() * texts.length)];
 }
