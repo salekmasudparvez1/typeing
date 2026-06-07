@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { CountdownOverlay } from "@/components/typing/CountdownOverlay";
 import { DifficultySelector } from "@/components/typing/DifficultySelector";
 import { KeyboardHeatmap } from "@/components/typing/KeyboardHeatmap";
+import { LanguageSelector } from "@/components/typing/LanguageSelector";
 import { ModeSelector } from "@/components/typing/ModeSelector";
 import { MotivationalText } from "@/components/typing/MotivationalText";
 import { StatsBar } from "@/components/typing/StatsBar";
@@ -25,6 +26,7 @@ export function TypingScreen() {
   const finishTest = useAppStore((s) => s.finishTest);
   const setDifficulty = useAppStore((s) => s.setDifficulty);
   const setMode = useAppStore((s) => s.setMode);
+  const setLanguage = useAppStore((s) => s.setLanguage);
   const setSoundEnabled = useAppStore((s) => s.setSoundEnabled);
   const goToLanding = useAppStore((s) => s.goToLanding);
 
@@ -66,6 +68,7 @@ export function TypingScreen() {
   const isRunning = status === "running";
   const isFocus = settings.mode === "focus";
   const isZen = settings.mode === "zen";
+  const isCodeMode = settings.mode === "code";
   const milestone = getMilestone(stats.wpm);
 
   return (
@@ -124,6 +127,13 @@ export function TypingScreen() {
                   onChange={setMode}
                   disabled={isRunning}
                 />
+                {isCodeMode && (
+                  <LanguageSelector
+                    value={settings.language}
+                    onChange={setLanguage}
+                    disabled={isRunning}
+                  />
+                )}
               </div>
             )}
 
