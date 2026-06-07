@@ -8,6 +8,7 @@ import { TypingScreen } from "@/components/typing/TypingScreen";
 import { GradientBlobs } from "@/components/ui/GradientBlobs";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { ParticleBackground } from "@/components/ui/ParticleBackground";
+import { SiteFooter } from "@/components/ui/SiteFooter";
 import { useAppStore } from "@/store/useAppStore";
 
 export function AppShell() {
@@ -28,6 +29,19 @@ export function AppShell() {
       <GradientBlobs />
       <ParticleBackground />
 
+      <motion.a
+        href="https://github.com/salekmasudparvez1"
+        target="_blank"
+        rel="noreferrer"
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="fixed right-4 top-4 z-40 inline-flex items-center rounded-full border border-white/10 bg-black/30 px-3 py-2 text-xs text-muted backdrop-blur-xl transition-colors hover:text-foreground hover:border-white/20"
+        aria-label="Open GitHub profile"
+      >
+        <span className="hidden sm:inline">GitHub Repo</span>
+        <span className="sm:hidden">Repo</span>
+      </motion.a>
+
       <AnimatePresence mode="wait">
         <motion.div
           key={screen}
@@ -41,6 +55,8 @@ export function AppShell() {
           {screen === "results" && <ResultsDashboard />}
         </motion.div>
       </AnimatePresence>
+
+      <SiteFooter />
     </div>
   );
 }

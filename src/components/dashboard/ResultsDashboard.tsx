@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Flame, RotateCcw, Trophy } from "lucide-react";
+import { ArrowLeft, Flame, RotateCcw, Share2, Trophy } from "lucide-react";
 import { AnimatedButton } from "@/components/ui/AnimatedButton";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -10,6 +11,7 @@ import { AccuracyChart } from "@/components/charts/AccuracyChart";
 import { DailyPerformanceChart } from "@/components/charts/DailyPerformanceChart";
 import { WpmChart } from "@/components/charts/WpmChart";
 import { useAppStore } from "@/store/useAppStore";
+import { sharePerformanceAsImage } from "@/lib/share-performance";
 import { formatTime, getPerformanceRating } from "@/utils/typing";
 import { cn } from "@/utils/cn";
 
@@ -22,6 +24,7 @@ const RATING_COLORS: Record<string, string> = {
 };
 
 export function ResultsDashboard() {
+  const [isSharing, setIsSharing] = useState(false);
   const settings = useAppStore((s) => s.settings);
   const testHistory = useAppStore((s) => s.testHistory);
   const dailyPerformance = useAppStore((s) => s.dailyPerformance);
@@ -33,6 +36,20 @@ export function ResultsDashboard() {
 
   const rating = getPerformanceRating(latest.wpm, latest.accuracy);
   const isNewBest = latest.wpm >= settings.bestWpm;
+
+  const handleShare = async () => {
+    if (isSharing) return;
+    setIsSharing(true);
+    try {
+      await sharePerformanceAsImage({
+        result: latest,
+        settings,
+        rating,
+      });
+    } finally {
+      setIsSharing(false);
+    }
+  };
 
   const stats = [
     { label: "WPM", value: latest.wpm, color: "text-cyan-400" },
@@ -161,6 +178,10 @@ export function ResultsDashboard() {
           <AnimatedButton onClick={restartTest} size="lg">
             <RotateCcw className="w-5 h-5" />
             Try Again
+          </AnimatedButton>
+          <AnimatedButton variant="secondary" onClick={handleShare} size="lg" disabled={isSharing}>
+            <Share2 className="w-5 h-5" />
+            {isSharing ? "Preparing Image..." : "Share Result"}
           </AnimatedButton>
           <AnimatedButton variant="secondary" onClick={goToLanding} size="lg">
             Back to Home
