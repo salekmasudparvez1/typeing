@@ -2,7 +2,9 @@ export type Difficulty = "easy" | "medium" | "hard";
 
 export type Theme = "dark" | "light";
 
-export type TestMode = "normal" | "focus" | "zen";
+export type TestMode = "normal" | "focus" | "zen" | "code";
+
+export type Language = "general" | "python" | "react" | "pandas" | "numpy" | "sklearn" | "typescript";
 
 export type Screen = "landing" | "typing" | "results";
 
@@ -30,6 +32,7 @@ export interface TestResult {
   timeTaken: number;
   difficulty: Difficulty;
   mode: TestMode;
+  language?: Language;
   timestamp: number;
   timeSeries: TimeSeriesPoint[];
 }
@@ -50,6 +53,7 @@ export interface AppSettings {
   soundEnabled: boolean;
   difficulty: Difficulty;
   mode: TestMode;
+  language: Language;
   bestWpm: number;
   streak: number;
   lastPlayedDate: string | null;
