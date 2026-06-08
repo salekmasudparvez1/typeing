@@ -1,13 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Code2, Database, FileCode, Layers, Python, Type } from "lucide-react";
+import { Braces, Code2, Database, FileCode, Layers, Type } from "lucide-react";
 import { cn } from "@/utils/cn";
 import type { Language } from "@/types";
 
 const LANGUAGES: { value: Language; label: string; icon: React.ReactNode }[] = [
   { value: "general", label: "General", icon: <FileCode className="w-4 h-4" /> },
-  { value: "python", label: "Python", icon: <Python className="w-4 h-4" /> },
+  { value: "python", label: "Python", icon: <Braces className="w-4 h-4" /> },
   { value: "react", label: "React/JSX", icon: <Code2 className="w-4 h-4" /> },
   { value: "pandas", label: "Pandas", icon: <Database className="w-4 h-4" /> },
   { value: "numpy", label: "NumPy", icon: <Layers className="w-4 h-4" /> },

@@ -15,6 +15,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   soundEnabled: true,
   difficulty: "medium",
   mode: "normal",
+  language: "general",
   bestWpm: 0,
   streak: 0,
   lastPlayedDate: null,

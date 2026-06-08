@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { GitBranch } from "lucide-react";
 import { useEffect } from "react";
 import { LandingScreen } from "@/components/landing/LandingScreen";
 import { ResultsDashboard } from "@/components/dashboard/ResultsDashboard";
@@ -30,14 +31,15 @@ export function AppShell() {
       <ParticleBackground />
 
       <motion.a
-        href="https://github.com/salekmasudparvez1"
+        href="https://github.com/salekmasudparvez1/typeing"
         target="_blank"
         rel="noreferrer"
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="fixed right-4 top-4 z-40 inline-flex items-center rounded-full border border-white/10 bg-black/30 px-3 py-2 text-xs text-muted backdrop-blur-xl transition-colors hover:text-foreground hover:border-white/20"
-        aria-label="Open GitHub profile"
+        className="fixed right-4 top-4 z-40 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/30 px-3 py-2 text-xs text-muted backdrop-blur-xl transition-colors hover:text-foreground hover:border-white/20"
+        aria-label="View source on GitHub"
       >
+        <GitBranch className="w-3.5 h-3.5" />
         <span className="hidden sm:inline">GitHub Repo</span>
         <span className="sm:hidden">Repo</span>
       </motion.a>
