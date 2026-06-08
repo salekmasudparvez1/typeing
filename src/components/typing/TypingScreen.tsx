@@ -29,6 +29,7 @@ export function TypingScreen() {
   const setLanguage = useAppStore((s) => s.setLanguage);
   const setSoundEnabled = useAppStore((s) => s.setSoundEnabled);
   const goToLanding = useAppStore((s) => s.goToLanding);
+  const restartTest = useAppStore((s) => s.restartTest);
 
   const { playCorrect, playError, playComplete } = useSound(settings.soundEnabled);
 
@@ -48,7 +49,6 @@ export function TypingScreen() {
     heatmap,
     startCountdown,
     beginTyping,
-    restart,
   } = useTypingTest({
     text: currentText,
     difficulty: settings.difficulty,
@@ -84,12 +84,26 @@ export function TypingScreen() {
           ← Back
         </motion.button>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {!isZen && (
             <span className="text-sm text-muted hidden sm:inline">
               {settings.userName}
             </span>
           )}
+
+          {/* Live session reminder - makes the choice feel real */}
+          <div className="hidden items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-medium text-muted sm:flex">
+            <span className="capitalize">{settings.difficulty}</span>
+            <span className="text-white/30">•</span>
+            <span className="capitalize">{settings.mode}</span>
+            {isCodeMode && settings.language !== "general" && (
+              <>
+                <span className="text-white/30">•</span>
+                <span className="capitalize">{settings.language}</span>
+              </>
+            )}
+          </div>
+
           <motion.button
             onClick={() => setSoundEnabled(!settings.soundEnabled)}
             whileHover={{ scale: 1.05 }}
@@ -180,8 +194,7 @@ export function TypingScreen() {
               <AnimatedButton
                 variant="secondary"
                 onClick={() => {
-                  restart();
-                  startCountdownTimer();
+                  restartTest();
                 }}
                 disabled={status === "countdown"}
               >
@@ -190,9 +203,14 @@ export function TypingScreen() {
               </AnimatedButton>
             </div>
 
-            <p className="text-center text-xs text-muted">
-              Press <kbd className="px-1.5 py-0.5 rounded bg-white/10 font-mono">Esc</kbd> to finish early
-            </p>
+            <div className="flex flex-col items-center gap-1 text-center text-xs text-muted">
+              <p>
+                Press <kbd className="px-1.5 py-0.5 rounded bg-white/10 font-mono">Esc</kbd> to finish early
+              </p>
+              <p className="text-[10px] text-muted/60">
+                <kbd className="px-1 py-px rounded bg-white/10 font-mono">Backspace</kbd> to correct • Type naturally
+              </p>
+            </div>
           </motion.div>
         </AnimatePresence>
       </main>

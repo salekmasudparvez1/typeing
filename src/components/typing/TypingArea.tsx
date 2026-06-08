@@ -11,6 +11,35 @@ interface TypingAreaProps {
 
 export function TypingArea({ text, typed, focusMode }: TypingAreaProps) {
   const chars = text.split("");
+  const current = typed.length;
+
+  let start = 0;
+  let end = chars.length;
+
+  if (focusMode && chars.length > 0) {
+    // Focus mode: show limited context around the caret for less distraction.
+    // Prefer starting near a previous whitespace/newline for nicer "line" feel.
+    const lookBack = 55;
+    start = Math.max(0, current - lookBack);
+
+    // Try to snap start to after a recent newline or space for readability (esp. code)
+    const searchFrom = Math.max(0, current - 90);
+    for (let j = current - 1; j >= searchFrom; j--) {
+      if (chars[j] === "\n" || (chars[j] === " " && j < current - 8)) {
+        start = j + 1;
+        break;
+      }
+    }
+
+    // Show a reasonable window ahead (good for both prose and multi-line code)
+    const lookAhead = 180;
+    end = Math.min(chars.length, current + lookAhead);
+  }
+
+  const visible = chars.slice(start, end);
+  const offset = start;
+
+  const hasMoreAfter = focusMode && end < chars.length;
 
   return (
     <div
@@ -22,7 +51,8 @@ export function TypingArea({ text, typed, focusMode }: TypingAreaProps) {
       role="textbox"
       aria-readonly
     >
-      {chars.map((char, i) => {
+      {visible.map((char, visIdx) => {
+        const i = offset + visIdx;
         const typedChar = typed[i];
         let status: "pending" | "correct" | "incorrect" | "current" = "pending";
 
@@ -55,6 +85,10 @@ export function TypingArea({ text, typed, focusMode }: TypingAreaProps) {
           </span>
         );
       })}
+
+      {hasMoreAfter && (
+        <span className="ml-1 text-muted/40 text-base align-baseline">…</span>
+      )}
     </div>
   );
 }

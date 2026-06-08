@@ -1,4 +1,4 @@
-import type { Difficulty, Language } from "@/types";
+import type { Difficulty, Language, TestMode } from "@/types";
 
 export const TYPING_TEXTS: Record<Difficulty, string[]> = {
   easy: [
@@ -53,9 +53,19 @@ export const CODE_SNIPPETS: Record<Language, string[]> = {
   ],
 };
 
-export function getRandomText(difficulty: Difficulty, language: Language = "general"): string {
-  if (language !== "general" && CODE_SNIPPETS[language]) {
-    const snippets = CODE_SNIPPETS[language];
+export function getRandomText(
+  difficulty: Difficulty,
+  language: Language = "general",
+  mode: TestMode = "normal"
+): string {
+  // When in "code" mode with general language, default to a code language for content
+  let effectiveLang = language;
+  if (mode === "code" && language === "general") {
+    effectiveLang = "typescript";
+  }
+
+  if (effectiveLang !== "general" && CODE_SNIPPETS[effectiveLang]?.length) {
+    const snippets = CODE_SNIPPETS[effectiveLang];
     return snippets[Math.floor(Math.random() * snippets.length)];
   }
   const texts = TYPING_TEXTS[difficulty];

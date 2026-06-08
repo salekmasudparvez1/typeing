@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Flame, RotateCcw, Share2, Trophy } from "lucide-react";
 import { AnimatedButton } from "@/components/ui/AnimatedButton";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { Celebration } from "@/components/ui/Celebration";
 import { HistoryCards } from "@/components/dashboard/HistoryCards";
 import { AccuracyChart } from "@/components/charts/AccuracyChart";
 import { DailyPerformanceChart } from "@/components/charts/DailyPerformanceChart";
@@ -25,6 +26,7 @@ const RATING_COLORS: Record<string, string> = {
 
 export function ResultsDashboard() {
   const [isSharing, setIsSharing] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
   const settings = useAppStore((s) => s.settings);
   const testHistory = useAppStore((s) => s.testHistory);
   const dailyPerformance = useAppStore((s) => s.dailyPerformance);
@@ -32,13 +34,24 @@ export function ResultsDashboard() {
   const goToLanding = useAppStore((s) => s.goToLanding);
 
   const latest = testHistory[0];
+  const rating = latest ? getPerformanceRating(latest.wpm, latest.accuracy) : "Good" as const;
+  const isNewBest = latest ? latest.wpm >= settings.bestWpm : false;
+
+  // Premium celebration for excellent runs or new personal bests
+  // (must be called unconditionally)
+  useEffect(() => {
+    if (!latest) return;
+    const shouldCelebrate = rating === "Excellent" || isNewBest;
+    if (shouldCelebrate) {
+      const t = setTimeout(() => setShowCelebration(true), 280);
+      return () => clearTimeout(t);
+    }
+  }, [latest, rating, isNewBest]);
+
   if (!latest) return null;
 
-  const rating = getPerformanceRating(latest.wpm, latest.accuracy);
-  const isNewBest = latest.wpm >= settings.bestWpm;
-
   const handleShare = async () => {
-    if (isSharing) return;
+    if (isSharing || !latest || !rating) return;
     setIsSharing(true);
     try {
       await sharePerformanceAsImage({
@@ -188,6 +201,12 @@ export function ResultsDashboard() {
           </AnimatedButton>
         </div>
       </main>
+
+      <Celebration 
+        trigger={showCelebration} 
+        type={isNewBest ? "newbest" : "excellent"} 
+        onComplete={() => setShowCelebration(false)} 
+      />
     </div>
   );
 }

@@ -165,21 +165,29 @@ export function useTypingTest({
         return;
       }
 
-      if (e.key.length !== 1) return;
+      // Support Enter for newlines in code snippets (and regular text)
+      let toType: string | null = e.key.length === 1 ? e.key : null;
+      if (e.key === "Enter") {
+        toType = "\n";
+      }
+      if (!toType) {
+        if (e.key === "Tab") e.preventDefault(); // prevent focus change; user types spaces for indents
+        return;
+      }
       e.preventDefault();
 
       const index = typed.length;
       if (index >= text.length) return;
 
       const expected = text[index];
-      const isCorrect = e.key === expected;
+      const isCorrect = toType === expected;
 
       setTyped((prev) => {
-        const next = prev + e.key;
+        const next = prev + toType;
         typedRef.current = next;
         return next;
       });
-      updateHeatmap(e.key.toUpperCase(), !isCorrect);
+      updateHeatmap(toType === "\n" ? "Enter" : toType.toUpperCase(), !isCorrect);
 
       if (!isCorrect) {
         mistakesRef.current += 1;

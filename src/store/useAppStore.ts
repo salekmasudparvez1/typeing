@@ -97,18 +97,35 @@ export const useAppStore = create<AppState>((set, get) => ({
   setDifficulty: (difficulty) => {
     persistDifficulty(difficulty);
     const settings = updateSettings({ difficulty });
-    set({ settings });
+    if (get().screen === "typing") {
+      const newText = getRandomText(settings.difficulty, settings.language, settings.mode);
+      set({ settings, currentText: newText });
+    } else {
+      set({ settings });
+    }
   },
 
   setMode: (mode) => {
     persistMode(mode);
     const settings = updateSettings({ mode });
-    set({ settings });
+    if (get().screen === "typing" && mode === "code") {
+      // Only force a content refresh when switching *to* code mode so we get code snippets.
+      // Focus/Zen/Normal are UI modes that can apply to the current passage without resetting it.
+      const newText = getRandomText(settings.difficulty, settings.language, settings.mode);
+      set({ settings, currentText: newText });
+    } else {
+      set({ settings });
+    }
   },
 
   setLanguage: (language) => {
     const settings = updateSettings({ language });
-    set({ settings });
+    if (get().screen === "typing") {
+      const newText = getRandomText(settings.difficulty, settings.language, settings.mode);
+      set({ settings, currentText: newText });
+    } else {
+      set({ settings });
+    }
   },
 
   setSoundEnabled: (enabled) => {
@@ -121,7 +138,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const { settings } = get();
     set({
       screen: "typing",
-      currentText: getRandomText(settings.difficulty, settings.language),
+      currentText: getRandomText(settings.difficulty, settings.language, settings.mode),
     });
   },
 
@@ -139,7 +156,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const { settings } = get();
     set({
       screen: "typing",
-      currentText: getRandomText(settings.difficulty, settings.language),
+      currentText: getRandomText(settings.difficulty, settings.language, settings.mode),
     });
   },
 
